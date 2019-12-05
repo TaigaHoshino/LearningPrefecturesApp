@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:weightSum="1"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivMenu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.7"
+        app:srcCompat="@drawable/nihonchizu_area" />
+
+    <Button
+        android:id="@+id/btMenuStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bt_menu_start"
+        android:textSize="20sp"
+        android:layout_weight="0.02"
+        android:onClick="menuStartClickListener" />
+
+    <Button
+        android:id="@+id/btMenuContinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textSize="20sp"
+        android:layout_weight="0.02"
+        android:onClick="menuContinueClickListener"
+        android:text="@string/bt_menu_continue" />
+
+    <Button
+        android:id="@+id/btMenuCheckScore"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:textSize="20sp"
+        android:layout_weight="0.02"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp"
+        android:onClick="checkScoreClickListener"
+        android:text="@string/bt_check_score" />
+
+</LinearLayout>
+
+
+
+
+
+

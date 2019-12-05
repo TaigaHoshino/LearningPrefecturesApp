@@ -1,0 +1,623 @@
+package com.release.learningprefecturesapp;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class GamePlayActivity extends AppCompatActivity {
+
+    List<Map<String, Object>> _pftList = new ArrayList<>();
+    private int _counter = 0;
+    private int _correctCounter = 0;
+    private Button _btAnswer;
+    private Button _btNext;
+    private EditText _etPft;
+    private EditText _etPfto;
+    private ImageView _pftPhoto;
+    private int _mp3correct;
+    private int _mp3wrong;
+    private SoundPool _soundPool;
+
+    public void playMp3correct(){_soundPool.play(_mp3correct, 1f, 1f, 0, 0, 1f);}
+    public void playMp3wrong(){_soundPool.play(_mp3wrong, 1f, 1f, 0, 0, 1f);}
+
+    @Override
+    public void onStart(){
+
+        enableCheckScoreButton();
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game_play);
+        _btAnswer = findViewById(R.id.btGpAns);
+        _btNext = findViewById(R.id.btGpNext);
+        _etPft = findViewById(R.id.etGpPft);
+        _etPfto = findViewById(R.id.etGpPfto);
+        _pftPhoto = findViewById(R.id.ivGpPhoto);
+
+        _soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
+
+        _mp3correct = _soundPool.load(this, R.raw.correct_sound, 1);
+        _mp3wrong = _soundPool.load(this, R.raw.wrong_sound, 1);
+        File database = getApplicationContext().getDatabasePath("prefecturesmemo.db");
+        _etPfto.setEnabled(false);
+        Map<String, Object> data;
+
+        if(database.exists()){
+
+            DatabaseHelper helper = new DatabaseHelper(GamePlayActivity.this);
+            SQLiteDatabase db = helper.getWritableDatabase();
+            try{
+                Cursor cursor = db.query("prefecturesmemo", new String[] {"pft", "pfto", "photo"},
+                        null, null, null, null, null);
+
+                cursor.moveToFirst();
+
+                 do{
+                    data = new HashMap<>();
+                    data.put("pft", cursor.getString(0));
+                    data.put("pfto", cursor.getString(1));
+                    data.put("photo", cursor.getInt(2));
+                    _pftList.add(data);
+                }while(cursor.moveToNext());
+
+                cursor = db.query("countermemo", new String[] {"counter", "correctCounter"},
+                        null, null, null, null, null);
+
+                if(cursor.moveToFirst()) {
+                    _counter = cursor.getInt(0);
+                    _correctCounter = cursor.getInt(1);
+                }
+
+            }
+            finally{
+                db.close();
+            }
+
+            if(_counter >= _pftList.size()-1){
+                Button btStop = findViewById(R.id.btGpStop);
+                btStop.setEnabled(false);
+            }
+        }
+        else {
+            createPftsList();
+        }
+
+        data = _pftList.get(_counter);
+        _btNext.setEnabled(false);
+        _pftPhoto.setImageResource((int)data.get("photo"));
+        _btAnswer.setOnClickListener(new answerClickListener());
+
+    }
+
+    public class answerClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+
+            Map<String, Object> data = _pftList.get(_counter);
+            ImageView ivRltPhoto = findViewById(R.id.ivGpResult);
+
+            ivRltPhoto.setVisibility(View.VISIBLE);
+
+            if (_etPft.getText().toString().equals(data.get("pft"))) {
+                ivRltPhoto.setImageResource(R.drawable.correct);
+                playMp3correct();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        ImageView ivRltPhoto = findViewById(R.id.ivGpResult);
+                        ivRltPhoto.setVisibility(View.INVISIBLE);
+
+                    }
+                }, 500);
+                _etPft.setEnabled(false);
+                _etPfto.setEnabled(true);
+                _btAnswer.setOnClickListener(new answerClickListener2());
+
+            } else {
+                ivRltPhoto.setImageResource(R.drawable.wrong);
+                playMp3wrong();
+                _etPft.setEnabled(false);
+                _etPfto.setEnabled(false);
+                _btAnswer.setEnabled(false);
+                _btNext.setEnabled(true);
+                _counter++;
+                DatabaseHelper helper = new DatabaseHelper(GamePlayActivity.this);
+                SQLiteDatabase db = helper.getWritableDatabase();
+                String sqlInsert = "INSERT INTO pftsresultmemo (pft, pfto, photo, isCorrect, pftWrong, pftoWrong) VALUES (?, ?, ?, ?, ?, ?)";
+
+                SQLiteStatement stmt = db.compileStatement(sqlInsert);
+                stmt.bindString(1, (String) data.get("pft"));
+                stmt.bindString(2, (String) data.get("pfto"));
+                stmt.bindLong(3, (int) data.get("photo"));
+                stmt.bindLong(4, 0);
+                stmt.bindString(5, _etPft.getText().toString());
+                stmt.bindString(6, "");
+
+                stmt.executeInsert();
+
+                String sqlDelete = "DELETE FROM countermemo WHERE _id = ?";
+                stmt = db.compileStatement(sqlDelete);
+                stmt.bindLong(1, 0);
+
+                stmt.executeUpdateDelete();
+
+                sqlInsert = "INSERT INTO countermemo (_id, counter, correctCounter) VALUES (?, ?, ?)";
+
+                stmt = db.compileStatement(sqlInsert);
+                stmt.bindLong(1, 0);
+                stmt.bindLong(2, _counter);
+                stmt.bindLong(3, _correctCounter);
+
+                stmt.executeInsert();
+                _etPft.setText((String)data.get("pft"));
+                _etPfto.setText((String)data.get("pfto"));
+            }
+
+        }
+
+    }
+
+    public class answerClickListener2 implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view){
+
+            Map<String, Object> data = _pftList.get(_counter);
+            ImageView ivRltPhoto = findViewById(R.id.ivGpResult);
+            ivRltPhoto.setVisibility(View.VISIBLE);
+            DatabaseHelper helper = new DatabaseHelper(GamePlayActivity.this);
+            SQLiteDatabase db = helper.getWritableDatabase();
+            SQLiteStatement stmt;
+
+            if (_etPfto.getText().toString().equals(data.get("pfto"))) {
+                ivRltPhoto.setImageResource(R.drawable.correct);
+                playMp3correct();
+                _etPfto.setEnabled(false);
+                _correctCounter++;
+                String sqlInsert = "INSERT INTO pftsresultmemo (pft, pfto, photo," +
+                        " isCorrect) VALUES (?, ?, ?, ?)";
+
+                stmt = db.compileStatement(sqlInsert);
+                stmt.bindString(1, (String) data.get("pft"));
+                stmt.bindString(2, (String) data.get("pfto"));
+                stmt.bindLong(3, (int) data.get("photo"));
+                stmt.bindLong(4, 1);
+
+                stmt.executeInsert();
+            }
+            else {
+                ivRltPhoto.setImageResource(R.drawable.wrong);
+                playMp3wrong();
+                _etPfto.setEnabled(false);
+                String sqlInsert = "INSERT INTO pftsresultmemo (pft, pfto, photo," +
+                        " isCorrect, pftoWrong) VALUES (?, ?, ?, ?, ?)";
+                stmt = db.compileStatement(sqlInsert);
+                stmt.bindString(1, (String) data.get("pft"));
+                stmt.bindString(2, (String) data.get("pfto"));
+                stmt.bindLong(3, (int) data.get("photo"));
+                stmt.bindLong(4, 0);
+                stmt.bindString(5, _etPfto.getText().toString());
+
+                stmt.executeInsert();
+                _etPfto.setText((String)data.get("pfto"));
+            }
+
+            _btAnswer.setEnabled(false);
+            _btNext.setEnabled(true);
+            _counter++;
+
+            String sqlDelete = "DELETE FROM countermemo WHERE _id = ?";
+            stmt = db.compileStatement(sqlDelete);
+            stmt.bindLong(1, 0);
+
+            stmt.executeUpdateDelete();
+
+            String sqlInsert = "INSERT INTO countermemo (_id, counter, correctCounter) VALUES (?, ?, ?)";
+
+            stmt = db.compileStatement(sqlInsert);
+            stmt.bindLong(1, 0);
+            stmt.bindLong(2, _counter);
+            stmt.bindLong(3, _correctCounter);
+
+            stmt.executeInsert();
+        }
+    }
+
+    public void nextClickListener(View view){
+
+        if(_counter >= _pftList.size()-1){
+            Button btStop = findViewById(R.id.btGpStop);
+            btStop.setEnabled(false);
+        }
+
+        if(_counter == 1){
+            enableCheckScoreButton();
+        }
+
+        if(_counter == _pftList.size()){
+            Intent intent = new Intent(GamePlayActivity.this, GameFinishActivity.class);
+
+            intent.putExtra("correctCounter", _correctCounter);
+
+            startActivity(intent);
+        }
+        else {
+            Map<String, Object> data = new HashMap<>();
+            ImageView ivRltPhoto = findViewById(R.id.ivGpResult);
+            ivRltPhoto.setVisibility(View.INVISIBLE);
+            data = _pftList.get(_counter);
+            _pftPhoto.setImageResource((int) data.get("photo"));
+            _etPft.setEnabled(true);
+            _etPfto.setEnabled(false);
+            _btAnswer.setEnabled(true);
+            _btAnswer.setOnClickListener(new answerClickListener());
+            _btNext.setEnabled(false);
+            _etPft.setText("");
+            _etPfto.setText("");
+        }
+    }
+
+    public void stopClickListener(View view){
+        finish();
+    }
+
+    public void gpCheckScoreClickListener(View view){
+        Intent intent = new Intent(GamePlayActivity.this, CheckScoreActivity.class);
+
+        startActivity(intent);
+    }
+
+    public void createPftsList(){
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("pft", "北海道");
+        data.put("pfto", "札幌市");
+        data.put("photo", R.drawable.hokkaido);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "青森県");
+        data.put("pfto", "青森市");
+        data.put("photo", R.drawable.aomori);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "岩手県");
+        data.put("pfto", "盛岡市");
+        data.put("photo", R.drawable.iwate);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "秋田県");
+        data.put("pfto", "秋田市");
+        data.put("photo", R.drawable.akita);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "宮城県");
+        data.put("pfto", "仙台市");
+        data.put("photo", R.drawable.miyagi);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "山形県");
+        data.put("pfto", "山形市");
+        data.put("photo", R.drawable.yamagata);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "福島県");
+        data.put("pfto", "福島市");
+        data.put("photo", R.drawable.hukushima);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "茨城県");
+        data.put("pfto", "水戸市");
+        data.put("photo", R.drawable.ibaraki);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "栃木県");
+        data.put("pfto", "宇都宮市");
+        data.put("photo", R.drawable.tochigi);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "埼玉県");
+        data.put("pfto", "さいたま市");
+        data.put("photo", R.drawable.saitama);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "群馬県");
+        data.put("pfto", "前橋市");
+        data.put("photo", R.drawable.gunma);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "千葉県");
+        data.put("pfto", "千葉市");
+        data.put("photo", R.drawable.chiba);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "東京都");
+        data.put("pfto", "東京");
+        data.put("photo", R.drawable.tokyo);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "神奈川県");
+        data.put("pfto", "横浜市");
+        data.put("photo", R.drawable.kanagawa);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "新潟県");
+        data.put("pfto", "新潟市");
+        data.put("photo", R.drawable.niigata);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "富山県");
+        data.put("pfto", "富山市");
+        data.put("photo", R.drawable.toyama);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "石川県");
+        data.put("pfto", "金沢市");
+        data.put("photo", R.drawable.ishikawa);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "福井県");
+        data.put("pfto", "福井市");
+        data.put("photo", R.drawable.fukui);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "山梨県");
+        data.put("pfto", "甲府市");
+        data.put("photo", R.drawable.yamanashi);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "長野県");
+        data.put("pfto", "長野市");
+        data.put("photo", R.drawable.nagano);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "岐阜県");
+        data.put("pfto", "岐阜市");
+        data.put("photo", R.drawable.gifu);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "静岡県");
+        data.put("pfto", "静岡市");
+        data.put("photo", R.drawable.shizuoka);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "愛知県");
+        data.put("pfto", "名古屋市");
+        data.put("photo", R.drawable.aichi);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "三重県");
+        data.put("pfto", "津市");
+        data.put("photo", R.drawable.mie);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "滋賀県");
+        data.put("pfto", "大津市");
+        data.put("photo", R.drawable.shiga);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "京都府");
+        data.put("pfto", "京都市");
+        data.put("photo", R.drawable.kyoto);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "大阪府");
+        data.put("pfto", "大阪市");
+        data.put("photo", R.drawable.osaka);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "兵庫県");
+        data.put("pfto", "神戸市");
+        data.put("photo", R.drawable.hyougo);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "奈良県");
+        data.put("pfto", "奈良市");
+        data.put("photo", R.drawable.nara);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "和歌山県");
+        data.put("pfto", "和歌山市");
+        data.put("photo", R.drawable.wakayama);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "鳥取県");
+        data.put("pfto", "鳥取市");
+        data.put("photo", R.drawable.totori);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "島根県");
+        data.put("pfto", "松江市");
+        data.put("photo", R.drawable.shimane);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "岡山県");
+        data.put("pfto", "岡山市");
+        data.put("photo", R.drawable.okayama);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "広島県");
+        data.put("pfto", "広島市");
+        data.put("photo", R.drawable.hiroshima);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "山口県");
+        data.put("pfto", "山口市");
+        data.put("photo", R.drawable.yamaguchi);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "徳島県");
+        data.put("pfto", "徳島市");
+        data.put("photo", R.drawable.tokushima);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "香川県");
+        data.put("pfto", "高松市");
+        data.put("photo", R.drawable.kagawa);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "愛媛県");
+        data.put("pfto", "松山市");
+        data.put("photo", R.drawable.ehime);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "高知県");
+        data.put("pfto", "高知市");
+        data.put("photo", R.drawable.kouchi);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "福岡県");
+        data.put("pfto", "福岡市");
+        data.put("photo", R.drawable.fukuoka);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "佐賀県");
+        data.put("pfto", "佐賀市");
+        data.put("photo", R.drawable.saga);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "長崎県");
+        data.put("pfto", "長崎市");
+        data.put("photo", R.drawable.nagasaki);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "熊本県");
+        data.put("pfto", "熊本市");
+        data.put("photo", R.drawable.kumamoto);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "大分県");
+        data.put("pfto", "大分市");
+        data.put("photo", R.drawable.ooita);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "宮崎県");
+        data.put("pfto", "宮崎市");
+        data.put("photo", R.drawable.miyazaki);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "鹿児島県");
+        data.put("pfto", "鹿児島市");
+        data.put("photo", R.drawable.kagoshima);
+        _pftList.add(data);
+
+        data = new HashMap<>();
+        data.put("pft", "沖縄県");
+        data.put("pfto", "那覇市");
+        data.put("photo", R.drawable.okinawa);
+        _pftList.add(data);
+
+        Collections.shuffle(_pftList);
+
+        DatabaseHelper helper = new DatabaseHelper(GamePlayActivity.this);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        SQLiteStatement stmt;
+        int i;
+
+        for(i=0;i<_pftList.size();i++) {
+
+            data = _pftList.get(i);
+            String sqlInsert = "INSERT INTO prefecturesmemo (pft, pfto, photo) VALUES (?, ?, ?)";
+            stmt = db.compileStatement(sqlInsert);
+            stmt.bindString(1, (String) data.get("pft"));
+            stmt.bindString(2, (String) data.get("pfto"));
+            stmt.bindLong(3, (int) data.get("photo"));
+
+            stmt.executeInsert();
+        }
+    }
+
+    public void enableCheckScoreButton() {
+        DatabaseHelper helper = new DatabaseHelper(GamePlayActivity.this);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        Button btCheckScore = findViewById(R.id.btGpCheckScore);
+
+        try{
+
+            Cursor cursor = db.query("pftsresultmemo", new String[] {"_id"},
+                    null, null, null, null, null);
+
+            if(cursor.moveToFirst()){
+                btCheckScore.setEnabled(true);
+            }
+            else{
+                btCheckScore.setEnabled(false);
+            }
+        }
+        finally{
+            db.close();
+        }
+    }
+}
+

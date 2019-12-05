@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">都道府県学習アプリ</string>
+    <string name="bt_menu_start">はじめから</string>
+    <string name="bt_menu_continue">つづきから</string>
+    <string name="bt_menu_close">おわる</string>
+    <string name="tv_gp_pft">ここはどこ：</string>
+    <string name="tv_gp_pfto">県庁所在地は：</string>
+    <string name="bt_gp_ans">解答</string>
+    <string name="bt_gp_next">つぎへ</string>
+    <string name="bt_gp_stop">中断</string>
+    <string name="tv_fns_conglat">これで以上です。\nおつかれさまでした！</string>
+    <string name="tv_fns_score">あなたの得点：</string>
+    <string name="tv_fns_cheer">満点目指して\n頑張りましょう！</string>
+    <string name="bt_fns_close">メニューにもどる</string>
+    <string name="bt_check_score">成績をみる</string>
+    <string name="tv_score_proper_ans">答え：</string>
+    <string name="tv_score_ans">解答：</string>
+    <string name="tv_dt_result_ans">あなたの解答：</string>
+    <string name="bt_dt_result_back">一覧にもどる</string>
+</resources>
