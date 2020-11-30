@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE prefecturesmemo (");
+        sb.append("_id INTEGER,");
         sb.append("pft TEXT,");
         sb.append("pfto TEXT,");
         sb.append("photo INTEGER");
@@ -45,7 +46,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sb.append("CREATE TABLE countermemo (");
         sb.append("_id INTEGER PRIMARY KEY,");
         sb.append("counter INTEGER,");
-        sb.append("correctCounter INTEGER");
+        sb.append("correctCounter INTEGER,");
+        sb.append("numOfQuestions INTEGER");
         sb.append(");");
         sql = sb.toString();
 

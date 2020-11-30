@@ -93,38 +93,43 @@ public class CheckScoreActivity extends AppCompatActivity {
             DatabaseHelper helper = new DatabaseHelper(CheckScoreActivity.this);
             SQLiteDatabase db = helper.getWritableDatabase();
 
-            String sql = "SELECT*FROM pftsresultmemo WHERE _id =" + _pftsresultId;
-
-            Cursor cursor = db.rawQuery(sql, null);
-
             String pft = "";
             String pfto = "";
             int photo = 0;
             String pftWrong = "";
             String pftoWrong = "";
 
-            while(cursor.moveToNext()){
-                int idxPft = cursor.getColumnIndex("pft");
-                int idxPfto = cursor.getColumnIndex("pfto");
-                int idxPhoto = cursor.getColumnIndex("photo");
-                int idxPftWrong = cursor.getColumnIndex("pftWrong");
-                int idxPftoWrong = cursor.getColumnIndex("pftoWrong");
+            try{
+                String sql = "SELECT*FROM pftsresultmemo WHERE _id =" + _pftsresultId;
 
-                pft = cursor.getString(idxPft);
-                pfto = cursor.getString(idxPfto);
-                photo = cursor.getInt(idxPhoto);
-                if(cursor.getString(idxPftWrong) != null) {
-                    pftWrong = cursor.getString(idxPftWrong);
+                Cursor cursor = db.rawQuery(sql, null);
+
+                while(cursor.moveToNext()){
+                    int idxPft = cursor.getColumnIndex("pft");
+                    int idxPfto = cursor.getColumnIndex("pfto");
+                    int idxPhoto = cursor.getColumnIndex("photo");
+                    int idxPftWrong = cursor.getColumnIndex("pftWrong");
+                    int idxPftoWrong = cursor.getColumnIndex("pftoWrong");
+
+                    pft = cursor.getString(idxPft);
+                    pfto = cursor.getString(idxPfto);
+                    photo = cursor.getInt(idxPhoto);
+                    if(cursor.getString(idxPftWrong) != null) {
+                        pftWrong = cursor.getString(idxPftWrong);
+                    }
+                    else {
+                        pftWrong = "正解";
+                    }
+                    if(cursor.getString(idxPftoWrong) != null) {
+                        pftoWrong = cursor.getString(idxPftoWrong);
+                    }
+                    else {
+                        pftoWrong = "正解";
+                    }
                 }
-                else {
-                    pftWrong = "正解";
-                }
-                if(cursor.getString(idxPftoWrong) != null) {
-                    pftoWrong = cursor.getString(idxPftoWrong);
-                }
-                else {
-                    pftoWrong = "正解";
-                }
+            }
+            finally {
+                db.close();
             }
 
             Intent intent = new Intent(CheckScoreActivity.this, DetaildResultActivity.class);

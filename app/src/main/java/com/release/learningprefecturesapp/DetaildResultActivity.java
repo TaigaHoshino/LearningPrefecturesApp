@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +23,8 @@ public class DetaildResultActivity extends AppCompatActivity {
         int photo = intent.getIntExtra("photo", 0);
         String pftWrong = intent.getStringExtra("pftWrong");
         String pftoWrong = intent.getStringExtra("pftoWrong");
+
+        Log.d("debug", String.valueOf(photo));
 
         ImageView ivPhoto = findViewById(R.id.ivDpResultPhoto);
         TextView tvPftPropAns = findViewById(R.id.tvDtResultPftPropAns);

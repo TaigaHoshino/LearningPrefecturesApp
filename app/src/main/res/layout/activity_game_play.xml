@@ -11,6 +11,8 @@
         android:layout_height="0dp"
         android:layout_weight="0.15"
         android:layout_gravity="right"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal">
 
         <Button
@@ -21,7 +23,10 @@
             android:layout_marginRight="10dp"
             android:textSize="20sp"
             android:onClick="gpCheckScoreClickListener"
-            android:text="@string/bt_check_score"/>
+            android:text="@string/bt_check_score"
+            android:textStyle="bold"
+            android:textColor="@drawable/button_check_score_text"
+            style="@style/checkScoreButton"/>
 
         <Button
             android:id="@+id/btGpStop"
@@ -30,7 +35,10 @@
             android:textSize="20sp"
             android:layout_marginBottom="5dp"
             android:onClick="stopClickListener"
-            android:text="@string/bt_gp_stop" />
+            android:text="@string/bt_gp_stop"
+            android:textStyle="bold"
+            android:textColor="@drawable/button_stop_text"
+            style="@style/stopButton"/>
 
     </LinearLayout>
 
@@ -39,7 +47,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6">
+        android:layout_weight="0.5">
         <ImageView
             android:id="@+id/ivGpPhoto"
             android:layout_width="match_parent"
@@ -50,6 +58,60 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:text="@string/tv_gp_correct_ratio"/>
+
+                <TextView
+                    android:id="@+id/tvGpCorrectRatio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:text="text view"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:text="@string/tv_gp_answer_count"/>
+
+                <TextView
+                    android:id="@+id/tvGpNumOfAns"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:text="text view"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
     </FrameLayout>
 
     <Button
@@ -57,13 +119,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_weight="0.03"
+        android:background="@drawable/button_game_start"
+        android:textStyle="bold"
         android:text="@string/bt_gp_ans"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_weight="0.1"
         android:orientation="horizontal">
 
@@ -73,6 +141,7 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:layout_gravity="center_vertical"
+            android:textColor="#000000"
             android:text="@string/tv_gp_pft"/>
 
         <EditText
@@ -81,7 +150,9 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:layout_gravity="center_vertical"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:maxLength="8"
+            style="@style/CustomEditText"/>
 
     </LinearLayout>
 
@@ -89,6 +160,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_weight="0.07">
 
         <TextView
@@ -96,6 +169,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
+            android:textColor="#000000"
             android:text="@string/tv_gp_pfto"/>
 
         <EditText
@@ -103,7 +177,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:maxLength="8"
+            style="@style/CustomEditText"/>
 
     </LinearLayout>
 
@@ -116,6 +192,7 @@
         android:layout_weight="0.02"
         android:textSize="20sp"
         android:onClick="nextClickListener"
+        android:layout_marginRight="10dp"
         android:text="@string/bt_gp_next"/>
 
 </LinearLayout>

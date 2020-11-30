@@ -7,16 +7,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import java.io.File;
-
 public class GameFinishActivity extends AppCompatActivity {
+
+    InterstitialAdGenerator interstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getSupportActionBar().setTitle("リザルト");
         setContentView(R.layout.activity_game_finish);
 
-        File database = getApplicationContext().getDatabasePath("prefecturesmemo.db");
+        interstitialAd = new InterstitialAdGenerator(getApplicationContext());
 
         Intent intent = getIntent();
 
@@ -24,7 +26,7 @@ public class GameFinishActivity extends AppCompatActivity {
 
         TextView tvScore = findViewById(R.id.tvFnsScore);
 
-        tvScore.setText(correctCounter + "/47");
+        tvScore.setText(correctCounter + "/" + intent.getIntExtra("numberOfQuestions", 0));
 
     }
 
@@ -36,6 +38,8 @@ public class GameFinishActivity extends AppCompatActivity {
         intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         startActivity(intent);
+
+        interstitialAd.showInterstitial();
     }
 
     public void gfScoreCheckClickListener(View view){

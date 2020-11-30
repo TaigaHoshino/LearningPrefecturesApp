@@ -6,12 +6,189 @@
     android:weightSum="1"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/ivMenu"
+    <RelativeLayout
+        android:id="@+id/Japan"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.7"
-        app:srcCompat="@drawable/nihonchizu_area" />
+        android:layout_weight="0.8">
+
+        <RadioButton
+            android:id="@+id/regionMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:textSize="18sp"
+            android:text="@string/tv_menu_region_select"/>
+
+        <Button
+            android:id="@+id/Center"
+            android:layout_centerInParent="true"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:visibility="invisible"/>
+
+        <Button
+            android:id="@+id/Tyubu"
+            android:layout_width="50dp"
+            android:layout_height="90dp"
+            android:layout_below="@+id/Center"
+            android:layout_toRightOf="@+id/Center"
+            android:layout_centerHorizontal="true"
+            android:text="@string/bt_tyubu"
+            android:layout_margin="3dp"
+            android:tag="0"
+            style="@style/RegionButton"/>
+
+        <Button
+            android:id="@+id/Kanto"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_alignTop="@+id/Tyubu"
+            android:layout_toRightOf="@+id/Tyubu"
+            android:layout_marginRight="3dp"
+            android:text="@string/bt_kanto"
+            android:tag="0"
+            style="@style/RegionButton"/>
+
+        <Button
+            android:id="@+id/Tohoku"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_above="@+id/Kanto"
+            android:layout_toRightOf="@+id/Tyubu"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="3dp"
+            android:text="@string/bt_tohoku"
+            android:tag="0"
+            style="@style/RegionButton"/>
+
+        <Button
+            android:id="@+id/Hokkaido"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_above="@+id/Tohoku"
+            android:layout_alignLeft="@+id/Tohoku"
+            android:layout_marginBottom="10dp"
+            android:text="@string/bt_hokkaido"
+            android:tag="0"
+            style="@style/RegionButton"/>
+
+        <Button
+            android:id="@+id/Kinki"
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:layout_toLeftOf="@+id/Tyubu"
+            android:layout_alignTop="@+id/Tyubu"
+            android:text="@string/bt_kinki"
+            android:tag="0"
+            style="@style/RegionButton"/>
+
+        <Button
+            android:id="@+id/Tyugoku"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_toLeftOf="@+id/Kinki"
+            android:layout_alignTop="@+id/Kinki"
+            android:layout_marginRight="3dp"
+            android:text="@string/bt_tyugoku"
+            android:tag="0"
+            style="@style/RegionButton"/>
+
+        <Button
+            android:id="@+id/Shikoku"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/Tyugoku"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/Kinki"
+            android:text="@string/bt_shikoku"
+            android:tag="0"
+            style="@style/RegionButton"/>
+
+
+        <Button
+            android:id="@+id/KyuShu"
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/Tyugoku"
+            android:layout_alignTop="@+id/Tyugoku"
+            android:text="@string/bt_kyushu"
+            android:tag="0"
+            style="@style/RegionButton"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/randomMode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:text="@string/tv_menu_random_select"/>
+
+        <Spinner
+            android:id="@+id/spGameConfig"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:entries="@array/sp_menu_list"
+            android:spinnerMode="dropdown"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/weakPointMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="@string/tv_menu_weakpoint_select"/>
+
+        <Button
+            android:id="@+id/btMenuResetCount"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:text="@string/bt_menu_reset_count"
+            android:textSize="7sp"/>
+
+
+        <Spinner
+            android:id="@+id/spGameConfig2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:entries="@array/sp_menu_list"
+            android:spinnerMode="dropdown"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btMenuStart"
@@ -20,16 +197,25 @@
         android:text="@string/bt_menu_start"
         android:textSize="20sp"
         android:layout_weight="0.02"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        style="@style/gameStartbutton"
+        android:textStyle="bold"
         android:onClick="menuStartClickListener" />
+
 
     <Button
         android:id="@+id/btMenuContinue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:textSize="20sp"
         android:layout_weight="0.02"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:onClick="menuContinueClickListener"
+        android:background="@drawable/button_game_continue"
+        android:textStyle="bold"
         android:text="@string/bt_menu_continue" />
 
     <Button
@@ -39,10 +225,13 @@
         android:layout_gravity="right"
         android:textSize="20sp"
         android:layout_weight="0.02"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         android:onClick="checkScoreClickListener"
-        android:text="@string/bt_check_score" />
+        android:text="@string/bt_check_score"
+        style="@style/checkScoreButton"
+        android:textStyle="bold"
+        android:textColor="@drawable/button_check_score_text"/>
 
 </LinearLayout>
 

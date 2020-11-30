@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -6,6 +6,26 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="RegionButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/region_button_selector</item>
+    </style>
+
+    <style name="CustomEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/edit_text_design</item>
+    </style>
+
+    <style name="checkScoreButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_check_score</item>
+    </style>
+
+    <style name="stopButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_stop</item>
+    </style>
+
+    <style name="gameStartbutton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_game_start</item>
     </style>
 
 </resources>

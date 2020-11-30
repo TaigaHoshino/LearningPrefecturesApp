@@ -12,6 +12,7 @@
         android:layout_weight="0.5"
         android:textSize="30sp"
         android:gravity="center"
+        android:textColor="#000000"
         android:text="@string/tv_fns_conglat"/>
 
     <LinearLayout
@@ -25,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="30sp"
+            android:textColor="#000000"
             android:text="@string/tv_fns_score"/>
 
         <TextView
@@ -42,6 +44,7 @@
         android:layout_height="160dp"
         android:layout_weight="0.2"
         android:gravity="center"
+        android:textColor="#000000"
         android:text="@string/tv_fns_cheer"
         android:textSize="30sp" />
 
@@ -51,15 +54,19 @@
         android:layout_weight="0.03"
         android:textSize="20sp"
         android:onClick="backToMenuListener"
+        android:layout_margin="10dp"
         android:text="@string/bt_fns_close"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_margin="10dp"
         android:textSize="15sp"
         android:onClick="gfScoreCheckClickListener"
         android:layout_gravity="right"
+        style="@style/checkScoreButton"
+        android:textStyle="bold"
+        android:textColor="@drawable/button_check_score_text"
         android:text="@string/bt_check_score"/>
 
 

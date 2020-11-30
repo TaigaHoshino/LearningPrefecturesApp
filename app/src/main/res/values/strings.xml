@@ -3,6 +3,8 @@
     <string name="bt_menu_start">はじめから</string>
     <string name="bt_menu_continue">つづきから</string>
     <string name="bt_menu_close">おわる</string>
+    <string name="tv_menu_region_select">地方で出題</string>
+    <string name="tv_menu_random_select">問題数で出題</string>
     <string name="tv_gp_pft">ここはどこ：</string>
     <string name="tv_gp_pfto">県庁所在地は：</string>
     <string name="bt_gp_ans">解答</string>
@@ -17,4 +19,30 @@
     <string name="tv_score_ans">解答：</string>
     <string name="tv_dt_result_ans">あなたの解答：</string>
     <string name="bt_dt_result_back">一覧にもどる</string>
+    <string name="tv_gp_correct_ratio">正答率：</string>
+    <string name="tv_gp_answer_count">回答数：</string>
+    <string name="tv_menu_weakpoint_select">間違いが多い順に出題</string>
+    <string name="bt_menu_reset_count">リセット</string>
+    <string name="dialog_title">間違いカウントのリセット</string>
+    <string name="dialog_msg">間違いカウントをリセットします。よろしいですか？</string>
+    <string name="dialog_ok">はい</string>
+    <string name="dialog_ng">いいえ</string>
+    <string name="dialog_ok_toast">リセットしました</string>
+    <string name="dialog_ng_toast">リセットを中止しました</string>
+
+    <string-array name="sp_menu_list">
+        <item>10問</item>
+        <item>20問</item>
+        <item>30問</item>
+        <item>全問</item>
+    </string-array>
+
+    <string name="bt_tyubu">中部</string>
+    <string name="bt_kinki">近畿</string>
+    <string name="bt_tohoku">東北</string>
+    <string name="bt_hokkaido">北海道</string>
+    <string name="bt_kanto">関東</string>
+    <string name="bt_tyugoku">中国</string>
+    <string name="bt_shikoku">四国</string>
+    <string name="bt_kyushu">九州</string>
 </resources>
